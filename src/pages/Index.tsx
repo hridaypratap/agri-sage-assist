@@ -1,12 +1,30 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { HeroSection } from "@/components/HeroSection";
+import { ChatInterface } from "@/components/ChatInterface";
+import { ImageUpload } from "@/components/ImageUpload";
+import { ExpertConnect } from "@/components/ExpertConnect";
 
 const Index = () => {
+  const [activeComponent, setActiveComponent] = useState<string | null>(null);
+
+  const handleStartChat = () => setActiveComponent('chat');
+  const handleImageUpload = () => setActiveComponent('image');
+  const handleVoiceInput = () => setActiveComponent('chat'); // Opens chat with voice capability
+  const handleExpertConnect = () => setActiveComponent('expert');
+  const handleClose = () => setActiveComponent(null);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <HeroSection
+        onStartChat={handleStartChat}
+        onImageUpload={handleImageUpload}
+        onVoiceInput={handleVoiceInput}
+        onExpertConnect={handleExpertConnect}
+      />
+      
+      {activeComponent === 'chat' && <ChatInterface onClose={handleClose} />}
+      {activeComponent === 'image' && <ImageUpload onClose={handleClose} />}
+      {activeComponent === 'expert' && <ExpertConnect onClose={handleClose} />}
     </div>
   );
 };
