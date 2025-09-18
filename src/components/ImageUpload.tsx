@@ -4,29 +4,31 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Camera, Upload, X, CheckCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { ModalOverlay } from "@/components/ModalOverlay";
+import { analysisMockResults } from "@/Data/data";
+import type { AnalysisResult } from "@/types/types";
+import { useI18n } from "@/i18n/useI18n";
 
 interface ImageUploadProps {
   onClose: () => void;
 }
 
-interface AnalysisResult {
-  disease: string;
-  confidence: number;
-  severity: string;
-  recommendations: string[];
-}
+// Using shared AnalysisResult type from src/types/types
 
 export const ImageUpload = ({ onClose }: ImageUploadProps) => {
+  const { t } = useI18n();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
+    null
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleImageSelect = (file: File) => {
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       setSelectedImage(file);
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -36,8 +38,8 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
       setAnalysisResult(null);
     } else {
       toast({
-        title: "Invalid file type",
-        description: "Please select an image file",
+        title: t("image.invalidFile.title"),
+        description: t("image.invalidFile.desc"),
         variant: "destructive",
       });
     }
@@ -67,7 +69,7 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
 
     // Simulate analysis progress
     const progressInterval = setInterval(() => {
-      setAnalysisProgress(prev => {
+      setAnalysisProgress((prev) => {
         if (prev >= 90) {
           clearInterval(progressInterval);
           return 90;
@@ -81,50 +83,18 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
       clearInterval(progressInterval);
       setAnalysisProgress(100);
 
-      // Mock analysis results
-      const mockResults: AnalysisResult[] = [
-        {
-          disease: "Late Blight",
-          confidence: 89,
-          severity: "Moderate",
-          recommendations: [
-            "Apply fungicide containing copper or chlorothalonil",
-            "Improve air circulation around plants",
-            "Avoid overhead watering",
-            "Remove affected leaves immediately"
-          ]
-        },
-        {
-          disease: "Powdery Mildew",
-          confidence: 76,
-          severity: "Mild",
-          recommendations: [
-            "Apply neem oil or baking soda solution",
-            "Ensure proper spacing between plants",
-            "Water at soil level, not on leaves",
-            "Consider resistant varieties for next season"
-          ]
-        },
-        {
-          disease: "Healthy Plant",
-          confidence: 94,
-          severity: "None",
-          recommendations: [
-            "Continue current care routine",
-            "Monitor regularly for any changes",
-            "Maintain proper watering schedule",
-            "Consider nutrient supplementation"
-          ]
-        }
-      ];
-
-      const result = mockResults[Math.floor(Math.random() * mockResults.length)];
+      const result: AnalysisResult =
+        analysisMockResults[
+          Math.floor(Math.random() * analysisMockResults.length)
+        ];
       setAnalysisResult(result);
       setIsAnalyzing(false);
 
       toast({
-        title: "Analysis Complete",
-        description: `Detected: ${result.disease} (${result.confidence}% confidence)`,
+        title: t("image.analysis.complete"),
+        description: `${t("image.analysis.detected")}: ${result.disease} (${
+          result.confidence
+        }% confidence)`,
       });
     }, 3000);
   };
@@ -138,15 +108,20 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-earth">
+    <ModalOverlay onClose={onClose}>
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-earth mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gradient-earth text-primary-foreground">
           <div className="flex items-center space-x-2">
             <Camera className="h-5 w-5" />
-            <h3 className="font-semibold">Disease Detection</h3>
+            <h3 className="font-semibold">{t("image.header")}</h3>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="text-primary-foreground hover:bg-primary-foreground/20">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-primary-foreground hover:bg-primary-foreground/20"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -161,19 +136,23 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               onClick={handleFileInputClick}
             >
               <Camera className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Upload Plant Photo</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                {t("image.upload.title")}
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Drop an image here or click to select from your device
+                {t("image.upload.desc")}
               </p>
               <Button variant="wheat">
                 <Upload className="h-4 w-4 mr-2" />
-                Choose Image
+                {t("image.upload.button")}
               </Button>
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={(e) => e.target.files?.[0] && handleImageSelect(e.target.files[0])}
+                onChange={(e) =>
+                  e.target.files?.[0] && handleImageSelect(e.target.files[0])
+                }
                 className="hidden"
               />
             </div>
@@ -200,8 +179,12 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               {isAnalyzing && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Analyzing image...</span>
-                    <span className="text-sm text-muted-foreground">{analysisProgress}%</span>
+                    <span className="text-sm font-medium">
+                      {t("image.analyzing")}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {analysisProgress}%
+                    </span>
                   </div>
                   <Progress value={analysisProgress} className="w-full" />
                 </div>
@@ -217,15 +200,21 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
                       <AlertCircle className="h-5 w-5 text-orange-600 mt-1" />
                     )}
                     <div className="flex-1">
-                      <h4 className="font-semibold text-lg mb-1">{analysisResult.disease}</h4>
+                      <h4 className="font-semibold text-lg mb-1">
+                        {analysisResult.disease}
+                      </h4>
                       <p className="text-sm text-muted-foreground mb-3">
-                        Confidence: {analysisResult.confidence}% | Severity: {analysisResult.severity}
+                        Confidence: {analysisResult.confidence}% | Severity:{" "}
+                        {analysisResult.severity}
                       </p>
                       <div>
                         <h5 className="font-medium mb-2">Recommendations:</h5>
                         <ul className="space-y-1">
                           {analysisResult.recommendations.map((rec, index) => (
-                            <li key={index} className="text-sm text-muted-foreground flex items-start">
+                            <li
+                              key={index}
+                              className="text-sm text-muted-foreground flex items-start"
+                            >
                               <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 mr-2 flex-shrink-0"></span>
                               {rec}
                             </li>
@@ -240,19 +229,23 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               {/* Action Buttons */}
               <div className="flex space-x-3">
                 {!analysisResult && !isAnalyzing && (
-                  <Button variant="earth" onClick={analyzeImage} className="flex-1">
+                  <Button
+                    variant="earth"
+                    onClick={analyzeImage}
+                    className="flex-1"
+                  >
                     <Camera className="h-4 w-4 mr-2" />
-                    Analyze Image
+                    {t("image.analyze")}
                   </Button>
                 )}
                 <Button variant="outline" onClick={reset}>
-                  Upload Another
+                  {t("image.another")}
                 </Button>
               </div>
             </div>
           )}
         </div>
       </Card>
-    </div>
+    </ModalOverlay>
   );
 };

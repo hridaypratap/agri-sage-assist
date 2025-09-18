@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
@@ -24,5 +25,3 @@ export const Navbar = () => {
     </header>
   );
 };
-
-
