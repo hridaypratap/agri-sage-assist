@@ -24,4 +24,7 @@ dist-ssr
 *.sw?
 
 
-*.env
+# Environment files (do not commit secrets)
+.env
+.env.*
+.env.local

@@ -267,8 +267,10 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Camera, Upload, X, CheckCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-
+import { ModalOverlay } from "@/components/ModalOverlay";
+import { analysisMockResults } from "@/Data/data";
+import type { AnalysisResult } from "@/types/types";
+import { useI18n } from "@/i18n/useI18n";
 
 // ✨ 1. IMPORT GEMINI HELPER FUNCTIONS
 import { runGemini, fileToBase64 } from "../lib/gemini"; // Using relative paths
@@ -277,45 +279,42 @@ interface ImageUploadProps {
   onClose: () => void;
 }
 
-interface AnalysisResult {
-  disease: string;
-  confidence: number;
-  severity: string;
-  recommendations: string[];
-}
-
 // ✨ 2. HELPER FUNCTION TO PARSE GEMINI'S TEXT RESPONSE
-// This function converts the raw text from the AI into the structured object the UI needs.
 const parseAnalysisResult = (text: string): AnalysisResult => {
-    const diseaseMatch = text.match(/Disease:\s*(.*)/);
-    const confidenceMatch = text.match(/Confidence:\s*(\d+)/);
-    const severityMatch = text.match(/Severity:\s*(.*)/);
-    const recommendationsMatch = text.match(/Recommendations:\n((?:- .*\n?)*)/);
+  const diseaseMatch = text.match(/Disease:\s*(.*)/);
+  const confidenceMatch = text.match(/Confidence:\s*(\d+)/);
+  const severityMatch = text.match(/Severity:\s*(.*)/);
+  const recommendationsMatch = text.match(/Recommendations:\n((?:- .*\n?)*)/);
 
-    const recommendations = recommendationsMatch ?
-        recommendationsMatch[1].split('\n').map(r => r.replace(/^- /, '').trim()).filter(Boolean) :
-        ["No recommendations were provided."];
+  const recommendations = recommendationsMatch
+    ? recommendationsMatch[1]
+        .split("\n")
+        .map((r) => r.replace(/^- /, "").trim())
+        .filter(Boolean)
+    : ["No recommendations were provided."];
 
-    return {
-        disease: diseaseMatch ? diseaseMatch[1].trim() : "Analysis Inconclusive",
-        confidence: confidenceMatch ? parseInt(confidenceMatch[1], 10) : 0,
-        severity: severityMatch ? severityMatch[1].trim() : "Unknown",
-        recommendations: recommendations,
-    };
+  return {
+    disease: diseaseMatch ? diseaseMatch[1].trim() : "Analysis Inconclusive",
+    confidence: confidenceMatch ? parseInt(confidenceMatch[1], 10) : 0,
+    severity: severityMatch ? severityMatch[1].trim() : "Unknown",
+    recommendations: recommendations,
+  };
 };
 
-
 export const ImageUpload = ({ onClose }: ImageUploadProps) => {
+  const { t } = useI18n();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
+    null
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleImageSelect = (file: File) => {
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       setSelectedImage(file);
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -325,8 +324,8 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
       setAnalysisResult(null);
     } else {
       toast({
-        title: "Invalid file type",
-        description: "Please select an image file",
+        title: t("image.invalidFile.title"),
+        description: t("image.invalidFile.desc"),
         variant: "destructive",
       });
     }
@@ -348,18 +347,18 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
     e.preventDefault();
   };
 
-  // ✨ 3. THIS FUNCTION NOW CALLS THE GEMINI API FOR IMAGE ANALYSIS
+  // ✨ 3. ANALYSIS FUNCTION WITH GEMINI + FALLBACK MOCK
   const analyzeImage = async () => {
     if (!selectedImage) return;
 
     setIsAnalyzing(true);
-    setAnalysisProgress(50); // Set progress to a midpoint during the API call
+    setAnalysisProgress(50);
 
     try {
-      // Convert the image file to a base64 string
+      // Convert the image file to base64
       const imageBase64 = await fileToBase64(selectedImage);
-      
-      // Create a specific prompt for the vision model
+
+      // Custom prompt
       const prompt = `
         You are an expert in plant pathology. Analyze this image of a plant leaf and identify any diseases.
         Respond in the following format exactly, without any other text or explanation:
@@ -372,27 +371,47 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
         - [A third concise recommendation]
       `;
 
-      // Call the Gemini API with the prompt and image
+      // Try Gemini API
       const geminiResponse = await runGemini(prompt, imageBase64);
-      
-      // Parse the text response into a structured object
       const result = parseAnalysisResult(geminiResponse);
       setAnalysisResult(result);
 
       toast({
-        title: "Analysis Complete",
-        description: `Detected: ${result.disease} (${result.confidence}% confidence)`,
+        title: t("image.analysis.complete"),
+        description: `${t("image.analysis.detected")}: ${result.disease} (${result.confidence}% confidence)`,
       });
-
     } catch (error) {
-      console.error("Gemini image analysis failed:", error);
-      toast({
-        title: "Analysis Failed",
-        description: "Could not analyze the image. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Gemini image analysis failed, falling back to mock:", error);
+
+      // Fallback: simulate progress and return mock result
+      const progressInterval = setInterval(() => {
+        setAnalysisProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+      setTimeout(() => {
+        clearInterval(progressInterval);
+        setAnalysisProgress(100);
+
+        const result: AnalysisResult =
+          analysisMockResults[
+            Math.floor(Math.random() * analysisMockResults.length)
+          ];
+        setAnalysisResult(result);
+
+        toast({
+          title: "Mock Analysis Used",
+          description: `${t("image.analysis.detected")}: ${result.disease} (${result.confidence}% confidence)`,
+          variant: "destructive",
+        });
+      }, 2000);
     } finally {
-      setAnalysisProgress(100); // Complete the progress bar
+      setAnalysisProgress(100);
       setIsAnalyzing(false);
     }
   };
@@ -406,15 +425,20 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-earth">
+    <ModalOverlay onClose={onClose}>
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-earth mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gradient-earth text-primary-foreground">
           <div className="flex items-center space-x-2">
             <Camera className="h-5 w-5" />
-            <h3 className="font-semibold">Disease Detection</h3>
+            <h3 className="font-semibold">{t("image.header")}</h3>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="text-primary-foreground hover:bg-primary-foreground/20">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-primary-foreground hover:bg-primary-foreground/20"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -429,19 +453,23 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               onClick={handleFileInputClick}
             >
               <Camera className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Upload Plant Photo</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                {t("image.upload.title")}
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Drop an image here or click to select from your device
+                {t("image.upload.desc")}
               </p>
               <Button>
                 <Upload className="h-4 w-4 mr-2" />
-                Choose Image
+                {t("image.upload.button")}
               </Button>
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={(e) => e.target.files?.[0] && handleImageSelect(e.target.files[0])}
+                onChange={(e) =>
+                  e.target.files?.[0] && handleImageSelect(e.target.files[0])
+                }
                 className="hidden"
               />
             </div>
@@ -468,8 +496,12 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               {isAnalyzing && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Analyzing image...</span>
-                    <span className="text-sm text-muted-foreground">{analysisProgress}%</span>
+                    <span className="text-sm font-medium">
+                      {t("image.analyzing")}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {analysisProgress}%
+                    </span>
                   </div>
                   <Progress value={analysisProgress} className="w-full" />
                 </div>
@@ -485,15 +517,21 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
                       <AlertCircle className="h-5 w-5 text-orange-600 mt-1" />
                     )}
                     <div className="flex-1">
-                      <h4 className="font-semibold text-lg mb-1">{analysisResult.disease}</h4>
+                      <h4 className="font-semibold text-lg mb-1">
+                        {analysisResult.disease}
+                      </h4>
                       <p className="text-sm text-muted-foreground mb-3">
-                        Confidence: {analysisResult.confidence}% | Severity: {analysisResult.severity}
+                        Confidence: {analysisResult.confidence}% | Severity:{" "}
+                        {analysisResult.severity}
                       </p>
                       <div>
                         <h5 className="font-medium mb-2">Recommendations:</h5>
                         <ul className="space-y-1">
                           {analysisResult.recommendations.map((rec, index) => (
-                            <li key={index} className="text-sm text-muted-foreground flex items-start">
+                            <li
+                              key={index}
+                              className="text-sm text-muted-foreground flex items-start"
+                            >
                               <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 mr-2 flex-shrink-0"></span>
                               {rec}
                             </li>
@@ -508,20 +546,23 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               {/* Action Buttons */}
               <div className="flex space-x-3">
                 {!analysisResult && !isAnalyzing && (
-                  <Button onClick={analyzeImage} className="flex-1">
+                  <Button
+                    variant="earth"
+                    onClick={analyzeImage}
+                    className="flex-1"
+                  >
                     <Camera className="h-4 w-4 mr-2" />
-                    Analyze Image
+                    {t("image.analyze")}
                   </Button>
                 )}
-                 <Button variant="outline" onClick={reset} className="flex-1"> 
-                   Upload Another 
-                 </Button> 
+                <Button variant="outline" onClick={reset} className="flex-1">
+                  {t("image.another")}
+                </Button>
               </div>
             </div>
           )}
         </div>
       </Card>
-    </div>
+    </ModalOverlay>
   );
 };
-
