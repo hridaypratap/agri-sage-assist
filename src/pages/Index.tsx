@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import type { NasaPowerApiResponse } from "@/types/types";
 import { useDispatch } from "react-redux";
@@ -6,11 +5,6 @@ import {
   setLocation as setGlobalLocation,
   setWeatherData as storeSetWeatherData,
 } from "@/store/weatherSlice";
-
-import { useState } from "react";
-import { useUser } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
 
 import { HeroSection } from "@/components/HeroSection";
 import { ChatInterface } from "@/components/ChatInterface";
@@ -90,34 +84,15 @@ const Index = () => {
   const handleVoiceInput = () => setActiveComponent("chat"); // Opens chat with voice capability
   const handleExpertConnect = () => setActiveComponent("expert");
 
-  const { isSignedIn } = useUser();
-  const navigate = useNavigate();
-
-  const requireAuthOr = (fn: () => void) => {
-    if (!isSignedIn) {
-      navigate('/sign-in');
-      return;
-    }
-    fn();
-  };
-
-  const handleStartChat = () => requireAuthOr(() => setActiveComponent('chat'));
-  const handleImageUpload = () => requireAuthOr(() => setActiveComponent('image'));
-  const handleVoiceInput = () => requireAuthOr(() => setActiveComponent('chat')); // Opens chat with voice capability
-  const handleExpertConnect = () => requireAuthOr(() => setActiveComponent('expert'));
-
   const handleClose = () => setActiveComponent(null);
 
   return (
     <div className="min-h-screen bg-background">
-
       {locationError && (
         <div className="bg-red-100 text-red-700 p-2 text-center">
           {locationError}
         </div>
       )}
-
-      <Navbar />
 
       <HeroSection
         onStartChat={handleStartChat}
