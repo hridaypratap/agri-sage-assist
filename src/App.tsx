@@ -7,15 +7,10 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import { Provider } from "react-redux";
-import { store } from "@/store";
-import { I18nProvider } from "./i18n/I18nProvider";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
