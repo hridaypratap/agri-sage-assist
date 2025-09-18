@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Mic, Camera, MessageCircle, Users } from "lucide-react";
 import heroImage from "@/assets/hero-farming.jpg";
+import { useI18n } from "@/i18n/useI18n";
 
 interface HeroSectionProps {
   onStartChat: () => void;
@@ -11,6 +12,7 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpertConnect }: HeroSectionProps) => {
+  const { t } = useI18n();
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -25,12 +27,11 @@ export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpert
       <div className="relative z-10 container mx-auto px-4 py-20">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-            AI-Powered Farm
-            <span className="bg-gradient-earth bg-clip-text text-transparent"> Advisory</span>
+            {t('hero.title.leading')}
+            <span className="bg-gradient-earth bg-clip-text text-transparent"> {t('hero.title.trailing')}</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-            Get instant answers to farming questions, disease identification from photos, 
-            and connect with agricultural experts - all powered by advanced AI technology.
+            {t('hero.subtitle')}
           </p>
         </div>
 
@@ -41,12 +42,12 @@ export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpert
               <div className="p-3 bg-gradient-earth rounded-full">
                 <MessageCircle className="h-6 w-6 text-primary-foreground" />
               </div>
-              <h3 className="font-semibold text-foreground">AI Chat Support</h3>
+              <h3 className="font-semibold text-foreground">{t('hero.card.chat.title')}</h3>
               <p className="text-sm text-muted-foreground">
-                Get instant answers to common farming questions
+                {t('hero.card.chat.desc')}
               </p>
               <Button variant="earth" size="sm" onClick={onStartChat}>
-                Start Chat
+                {t('hero.card.chat.button')}
               </Button>
             </div>
           </Card>
@@ -56,12 +57,12 @@ export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpert
               <div className="p-3 bg-accent rounded-full">
                 <Camera className="h-6 w-6 text-accent-foreground" />
               </div>
-              <h3 className="font-semibold text-foreground">Disease Detection</h3>
+              <h3 className="font-semibold text-foreground">{t('hero.card.image.title')}</h3>
               <p className="text-sm text-muted-foreground">
-                Upload crop photos for AI-powered pest & disease identification
+                {t('hero.card.image.desc')}
               </p>
               <Button variant="wheat" size="sm" onClick={onImageUpload}>
-                Upload Photo
+                {t('hero.card.image.button')}
               </Button>
             </div>
           </Card>
@@ -71,12 +72,12 @@ export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpert
               <div className="p-3 bg-sage-green rounded-full">
                 <Mic className="h-6 w-6 text-foreground" />
               </div>
-              <h3 className="font-semibold text-foreground">Voice Input</h3>
+              <h3 className="font-semibold text-foreground">{t('hero.card.voice.title')}</h3>
               <p className="text-sm text-muted-foreground">
-                Ask questions using voice for hands-free operation
+                {t('hero.card.voice.desc')}
               </p>
               <Button variant="sage" size="sm" onClick={onVoiceInput}>
-                Voice Query
+                {t('hero.card.voice.button')}
               </Button>
             </div>
           </Card>
@@ -86,12 +87,12 @@ export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpert
               <div className="p-3 bg-earth-brown rounded-full">
                 <Users className="h-6 w-6 text-primary-foreground" />
               </div>
-              <h3 className="font-semibold text-foreground">Expert Connect</h3>
+              <h3 className="font-semibold text-foreground">{t('hero.card.expert.title')}</h3>
               <p className="text-sm text-muted-foreground">
-                Connect with agricultural experts for complex issues
+                {t('hero.card.expert.desc')}
               </p>
               <Button variant="outline" size="sm" onClick={onExpertConnect}>
-                Find Expert
+                {t('hero.card.expert.button')}
               </Button>
             </div>
           </Card>
@@ -101,10 +102,10 @@ export const HeroSection = ({ onStartChat, onImageUpload, onVoiceInput, onExpert
         <div className="text-center">
           <div className="inline-flex flex-col sm:flex-row gap-4">
             <Button size="lg" variant="earth" onClick={onStartChat}>
-              Get Started Now
+              {t('hero.cta.getStarted')}
             </Button>
             <Button size="lg" variant="outline" onClick={onExpertConnect}>
-              Talk to an Expert
+              {t('hero.cta.expert')}
             </Button>
           </div>
         </div>
