@@ -34,8 +34,8 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
   const handleExpertSelect = (expert: Expert) => {
     if (!expert.available) {
       toast({
-        title: t('expert.toast.notAvailable.title'),
-        description: t('expert.toast.notAvailable.desc'),
+        title: t("expert.toast.notAvailable.title"),
+        description: t("expert.toast.notAvailable.desc"),
         variant: "destructive",
       });
       return;
@@ -46,8 +46,8 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
   const handleSubmitConsultation = async () => {
     if (!consultationForm.subject || !consultationForm.description) {
       toast({
-        title: t('expert.toast.missing.title'),
-        description: t('expert.toast.missing.desc'),
+        title: t("expert.toast.missing.title"),
+        description: t("expert.toast.missing.desc"),
         variant: "destructive",
       });
       return;
@@ -60,8 +60,8 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
       setIsSubmitting(false);
       setIsSubmitted(true);
       toast({
-        title: t('expert.toast.sent.title'),
-        description: `${selectedExpert?.name} ${t('expert.toast.sent.desc')}`,
+        title: t("expert.toast.sent.title"),
+        description: `${selectedExpert?.name} ${t("expert.toast.sent.desc")}`,
       });
     }, 2000);
   };
@@ -71,12 +71,14 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
       <ModalOverlay onClose={onClose}>
         <Card className="w-full max-w-md p-6 text-center shadow-earth mx-auto">
           <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2">{t('expert.toast.sent.title')}</h3>
+          <h3 className="text-xl font-semibold mb-2">
+            {t("expert.toast.sent.title")}
+          </h3>
           <p className="text-muted-foreground mb-4">
-            {selectedExpert?.name} {t('expert.howItWorks.desc')}
+            {selectedExpert?.name} {t("expert.howItWorks.desc")}
           </p>
           <Button onClick={onClose} variant="earth" className="w-full">
-            {t('expert.form.back')}
+            {t("expert.form.back")}
           </Button>
         </Card>
       </ModalOverlay>
@@ -88,7 +90,7 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
       <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-earth mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gradient-earth text-primary-foreground">
-          <h3 className="text-xl font-semibold">{t('expert.header')}</h3>
+          <h3 className="text-xl font-semibold">{t("expert.header")}</h3>
           <Button
             variant="ghost"
             size="sm"
@@ -104,8 +106,12 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
             // Expert Selection
             <div className="space-y-6">
               <div>
-                <h4 className="text-lg font-semibold mb-2">{t('expert.choose.title')}</h4>
-                <p className="text-muted-foreground">{t('expert.choose.desc')}</p>
+                <h4 className="text-lg font-semibold mb-2">
+                  {t("expert.choose.title")}
+                </h4>
+                <p className="text-muted-foreground">
+                  {t("expert.choose.desc")}
+                </p>
               </div>
 
               <div className="grid gap-4">
@@ -139,7 +145,9 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                           <div className="text-right">
                             <div className="flex items-center space-x-1 mb-1">
                               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                              <span className="text-sm font-medium">{expert.rating}</span>
+                              <span className="text-sm font-medium">
+                                {expert.rating}
+                              </span>
                             </div>
                             <p className="text-sm font-semibold text-accent">
                               {expert.price}
@@ -155,13 +163,15 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                           <div className="flex items-center space-x-1">
                             <Clock className="h-3 w-3" />
                             <span>
-                              {expert.experience} {t('expert.years')}
+                              {expert.experience} {t("expert.years")}
                             </span>
                           </div>
                           <Badge
                             variant={expert.available ? "default" : "secondary"}
                           >
-                            {expert.available ? t('expert.available') : t('expert.busy')}
+                            {expert.available
+                              ? t("expert.available")
+                              : t("expert.busy")}
                           </Badge>
                         </div>
 
@@ -212,13 +222,15 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                   size="sm"
                   onClick={() => setSelectedExpert(null)}
                 >
-                  {t('expert.change')}
+                  {t("expert.change")}
                 </Button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">{t('expert.form.subject')}</label>
+                  <label className="text-sm font-medium mb-2 block">
+                    {t("expert.form.subject")}
+                  </label>
                   <Input
                     placeholder="e.g., Leaf spot disease on tomatoes"
                     value={consultationForm.subject}
@@ -232,7 +244,9 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium mb-2 block">{t('expert.form.description')}</label>
+                  <label className="text-sm font-medium mb-2 block">
+                    {t("expert.form.description")}
+                  </label>
                   <Textarea
                     placeholder="Describe your farming issue in detail, including symptoms, affected area, timeline, etc."
                     rows={4}
@@ -248,7 +262,9 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium mb-2 block">{t('expert.form.urgency')}</label>
+                    <label className="text-sm font-medium mb-2 block">
+                      {t("expert.form.urgency")}
+                    </label>
                     <select
                       className="w-full p-2 border rounded-md bg-background"
                       value={consultationForm.urgency}
@@ -269,7 +285,9 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium mb-2 block">{t('expert.form.time')}</label>
+                    <label className="text-sm font-medium mb-2 block">
+                      {t("expert.form.time")}
+                    </label>
                     <Input
                       type="datetime-local"
                       value={consultationForm.preferredTime}
@@ -286,8 +304,12 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                 <div className="flex items-center space-x-2 p-4 bg-muted/30 rounded-lg">
                   <Phone className="h-4 w-4 text-muted-foreground" />
                   <div className="text-sm">
-                    <p className="font-medium">{t('expert.howItWorks.title')}</p>
-                    <p className="text-muted-foreground">{t('expert.howItWorks.desc')}</p>
+                    <p className="font-medium">
+                      {t("expert.howItWorks.title")}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {t("expert.howItWorks.desc")}
+                    </p>
                   </div>
                 </div>
 
@@ -298,13 +320,15 @@ export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
                     disabled={isSubmitting}
                     className="flex-1"
                   >
-                    {isSubmitting ? t('expert.form.submitting') : t('expert.form.request')}
+                    {isSubmitting
+                      ? t("expert.form.submitting")
+                      : t("expert.form.request")}
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => setSelectedExpert(null)}
                   >
-                    {t('expert.form.back')}
+                    {t("expert.form.back")}
                   </Button>
                 </div>
               </div>

@@ -24,7 +24,7 @@ export const ChatInterface = ({ onClose }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: t('chat.greeting'),
+      content: t("chat.greeting"),
       sender: "bot",
       timestamp: new Date(),
     },
@@ -102,8 +102,8 @@ export const ChatInterface = ({ onClose }: ChatInterfaceProps) => {
       typeof w.SpeechRecognition === "function";
     if (!hasSpeech) {
       toast({
-        title: t('chat.voice.unsupported.title'),
-        description: t('chat.voice.unsupported.desc'),
+        title: t("chat.voice.unsupported.title"),
+        description: t("chat.voice.unsupported.desc"),
         variant: "destructive",
       });
       return;
@@ -124,8 +124,8 @@ export const ChatInterface = ({ onClose }: ChatInterfaceProps) => {
     recognition.onstart = () => {
       setIsListening(true);
       toast({
-        title: t('chat.voice.listening.title'),
-        description: t('chat.voice.listening.desc'),
+        title: t("chat.voice.listening.title"),
+        description: t("chat.voice.listening.desc"),
       });
     };
 
@@ -138,8 +138,8 @@ export const ChatInterface = ({ onClose }: ChatInterfaceProps) => {
     recognition.onerror = () => {
       setIsListening(false);
       toast({
-        title: t('chat.voice.error.title'),
-        description: t('chat.voice.error.desc'),
+        title: t("chat.voice.error.title"),
+        description: t("chat.voice.error.desc"),
         variant: "destructive",
       });
     };
@@ -158,7 +158,7 @@ export const ChatInterface = ({ onClose }: ChatInterfaceProps) => {
         <div className="flex items-center justify-between p-4 border-b bg-gradient-earth text-primary-foreground rounded-t-lg">
           <div className="flex items-center space-x-2">
             <Bot className="h-5 w-5" />
-            <h3 className="font-semibold">{t('chat.header')}</h3>
+            <h3 className="font-semibold">{t("chat.header")}</h3>
           </div>
           <Button
             variant="ghost"
@@ -228,7 +228,7 @@ export const ChatInterface = ({ onClose }: ChatInterfaceProps) => {
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder={t('chat.placeholder')}
+              placeholder={t("chat.placeholder")}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               className="flex-1"
             />

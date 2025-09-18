@@ -38,8 +38,8 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
       setAnalysisResult(null);
     } else {
       toast({
-        title: t('image.invalidFile.title'),
-        description: t('image.invalidFile.desc'),
+        title: t("image.invalidFile.title"),
+        description: t("image.invalidFile.desc"),
         variant: "destructive",
       });
     }
@@ -91,8 +91,10 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
       setIsAnalyzing(false);
 
       toast({
-        title: t('image.analysis.complete'),
-        description: `${t('image.analysis.detected')}: ${result.disease} (${result.confidence}% confidence)`,
+        title: t("image.analysis.complete"),
+        description: `${t("image.analysis.detected")}: ${result.disease} (${
+          result.confidence
+        }% confidence)`,
       });
     }, 3000);
   };
@@ -112,7 +114,7 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
         <div className="flex items-center justify-between p-6 border-b bg-gradient-earth text-primary-foreground">
           <div className="flex items-center space-x-2">
             <Camera className="h-5 w-5" />
-            <h3 className="font-semibold">{t('image.header')}</h3>
+            <h3 className="font-semibold">{t("image.header")}</h3>
           </div>
           <Button
             variant="ghost"
@@ -134,13 +136,15 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               onClick={handleFileInputClick}
             >
               <Camera className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{t('image.upload.title')}</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                {t("image.upload.title")}
+              </h3>
               <p className="text-muted-foreground mb-4">
-                {t('image.upload.desc')}
+                {t("image.upload.desc")}
               </p>
               <Button variant="wheat">
                 <Upload className="h-4 w-4 mr-2" />
-                {t('image.upload.button')}
+                {t("image.upload.button")}
               </Button>
               <input
                 ref={fileInputRef}
@@ -175,7 +179,9 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
               {isAnalyzing && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{t('image.analyzing')}</span>
+                    <span className="text-sm font-medium">
+                      {t("image.analyzing")}
+                    </span>
                     <span className="text-sm text-muted-foreground">
                       {analysisProgress}%
                     </span>
@@ -229,11 +235,11 @@ export const ImageUpload = ({ onClose }: ImageUploadProps) => {
                     className="flex-1"
                   >
                     <Camera className="h-4 w-4 mr-2" />
-                    {t('image.analyze')}
+                    {t("image.analyze")}
                   </Button>
                 )}
                 <Button variant="outline" onClick={reset}>
-                  {t('image.another')}
+                  {t("image.another")}
                 </Button>
               </div>
             </div>

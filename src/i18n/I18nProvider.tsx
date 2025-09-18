@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
-import { translations } from './translations';
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
+import { translations } from "./translations";
 
-type Lang = 'en' | 'ml';
+type Lang = "en" | "ml";
 
 type I18nContextValue = {
   lang: Lang;
@@ -11,16 +17,21 @@ type I18nContextValue = {
 
 const I18nContext = createContext<I18nContextValue | undefined>(undefined);
 
-export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [lang, setLangState] = useState<Lang>(() => {
-    const stored = typeof window !== 'undefined' ? (localStorage.getItem('lang') as Lang | null) : null;
-    return stored === 'ml' ? 'ml' : 'en';
+    const stored =
+      typeof window !== "undefined"
+        ? (localStorage.getItem("lang") as Lang | null)
+        : null;
+    return stored === "ml" ? "ml" : "en";
   });
 
   const setLang = (l: Lang) => {
     setLangState(l);
     try {
-      localStorage.setItem('lang', l);
+      localStorage.setItem("lang", l);
     } catch {
       // ignore write failures (private mode, etc.)
     }
@@ -28,7 +39,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Ensure document lang attribute follows selected language
-    if (typeof document !== 'undefined') {
+    if (typeof document !== "undefined") {
       document.documentElement.lang = lang;
     }
   }, [lang]);
@@ -40,7 +51,10 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [lang]);
 
-  const value = useMemo<I18nContextValue>(() => ({ lang, setLang, t }), [lang, t]);
+  const value = useMemo<I18nContextValue>(
+    () => ({ lang, setLang, t }),
+    [lang, t]
+  );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };
