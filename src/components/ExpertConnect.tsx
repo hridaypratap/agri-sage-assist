@@ -16,7 +16,6 @@ interface ExpertConnectProps {
   onClose: () => void;
 }
 
-
 // Data moved to src/Data/data.ts
 
 export const ExpertConnect = ({ onClose }: ExpertConnectProps) => {
