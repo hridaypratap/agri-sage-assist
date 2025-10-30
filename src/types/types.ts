@@ -13,6 +13,7 @@ export interface WeatherParameters {
   [key: string]: WeatherParameterValues;
 }
 
+
 // Metadata for each parameter
 export interface WeatherParameterMeta {
   units: string;
