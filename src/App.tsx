@@ -14,6 +14,8 @@ import { Navbar } from "@/components/Navbar";
 
 const queryClient = new QueryClient();
 
+dghd
+
 const App = () => (
   <Provider store={store}>
     <I18nProvider>
