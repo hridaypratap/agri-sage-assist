@@ -23,3 +23,5 @@ if (clerkPublishableKey) {
   // Fallback: run app without Clerk if no key is configured
   root.render(<App />);
 }
+
+
