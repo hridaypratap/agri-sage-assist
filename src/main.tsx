@@ -13,7 +13,6 @@ if (!rootEl) {
 }
 const root = createRoot(rootEl);
 
-
 if (clerkPublishableKey) {
   root.render(
     <ClerkProvider publishableKey={clerkPublishableKey}>
